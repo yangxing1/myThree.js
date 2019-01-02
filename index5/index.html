@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body, html {
+            margin:0;
+            padding:0;
+        }
+        canvas {
+            width:100%;
+            height:100%;
+            border: none;
+            cursor: pointer;
+            background-color: #EEEEEE;
+        }
+    </style>
+</head>
+<body>
+    <div id="your-pano">
+
+    </div>
+    <label for="asdf">
+        <input id="pano" type="file" vlaue="上传图片" onchange="upload()">
+    </label>
+    <!-- 高版本不知道怎么回事很多都不兼容 -->
+    <!-- <script src="../js/three.93.js"></script> -->
+    <script src="../js/three.71.min.js"></script>
+    <script src="../js/psv/sphoords.js"></script>
+    <!-- Photo Sphere Viewer files -->
+    <script src="../js/psv/PhotoSphereViewer.js"></script>
+    <script src="../js/psv/PSVNavBar.js"></script>
+    <script src="../js/psv/PSVNavBarButton.js"></script>
+    <!-- <script src="../js/Stats.js"></script>
+    <script src="../js/tween.min.js"></script> -->
+    <script>
+        function upload() {
+            // Retrieve the chosen file and create the FileReader object
+            var file = document.getElementById('pano').files[0];
+            var reader = new FileReader();
+
+            reader.onload = function() {
+                PSV = new PhotoSphereViewer({
+                    // Panorama, given in base 64
+                    panorama: reader.result,
+                    // Container
+                    container: 'your-pano',
+                    // Deactivate the animation
+                    time_anim: false,
+                    // Display the navigation bar
+                    navbar: true,
+                    // Resize the panorama
+                    size: {
+                        width: '100%',
+                        height: '500px'
+                    },
+                    // No XMP data
+                    usexmpdata: false
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+    </script>
+</body>
+</html>

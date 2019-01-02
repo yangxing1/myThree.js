@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body, html {
+            margin:0;
+            padding:0;
+        }
+        canvas {
+            width:100%;
+            height:100%;
+            border: none;
+            cursor: pointer;
+            background-color: #EEEEEE;
+        }
+    </style>
+</head>
+<body>
+    <script src="../js/three.js"></script>
+    <script src="../js/Stats.js"></script>
+    <script src="../js/tween.min.js"></script>
+    <script>
+        function Three () {
+            this.scene = new THREE.Scene();
+            this.camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 1, 10000);
+            this.camera.position.x = 0;
+            this.camera.position.y = 1000;
+            this.camera.position.z = 0;
+            this.camera.up.x = 0;
+            this.camera.up.y = 0;
+            this.camera.up.z = 1;
+            this.camera.lookAt({
+                x : 0,
+                y : 0,
+                z : 0
+            });
+            this.stats = new Stats();
+            this.stats.setMode(1); // 0: fps, 1: ms
+            // 将stats的界面对应左上角
+            this.stats.domElement.style.position = 'absolute';
+            this.stats.domElement.style.left = '0px';
+            this.stats.domElement.style.top = '0px';
+            document.body.appendChild(this.stats.domElement );
+            // setInterval(()=>{
+            //     this.stats.begin();
+            //     // 你的每一帧的代码
+            //     this.stats.end();
+            // }, 1000 / 60 );
+            this.renderer = new THREE.WebGLRenderer({
+                antialias : true
+            });
+            this.renderer.setClearColor(0xFFFFFF, 1.0);
+            this.renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(this.renderer.domElement);
+        }
+        Three.prototype.render = function(obj) {
+            var render = ()=>{
+                this.renderer.clear();   // 不知道为啥这个方法调用不了. 后面晓得版本高了.方法弃用了
+                window.requestAnimationFrame(render);
+                TWEEN.update();
+                this.stats.update();
+                // this.animate(obj);
+                this.renderer.render(this.scene, this.camera);
+            }
+            render();
+        }
+        // Three.prototype.animate = function(cube) {
+        //     this.animate.count = this.animate.count || 0;
+        //     this.animate.count >= 100 ? cube.position.x += 2 : cube.position.x -= 2;
+        //     this.animate.count += 1;
+        //     this.animate.count = this.animate.count <= 200 ? this.animate.count : 0;
+        //     // console.log(this.animate.count);
+        // }
+        Three.prototype.initTween = function(cube, option = {}) {
+            new TWEEN.Tween(cube.position)
+                .to(option.style, option.delay || 3000)
+                .repeat(option.repeat || 'Infinity')
+                .start();
+            return cube;
+        }
+        function initObject() {
+            var mesh;
+            var geometry = new THREE.CylinderGeometry( 100,150,400);
+            var material = new THREE.MeshLambertMaterial( { color:0xFFFFFF} );
+            mesh = new THREE.Mesh( geometry,material);
+            mesh.position = new THREE.Vector3(0,0,0);
+            three_one.scene.add(mesh);
+            return mesh;
+        }
+
+        
+
+        var three_one = new Three();    // 新建实例
+        three_one.render(
+            three_one.initTween(initObject(),{
+                style:{
+                    x: -400
+                },
+                delay:3000,
+                repeat:'Infinity'
+            })
+        );
+    </script>
+</body>
+</html>
